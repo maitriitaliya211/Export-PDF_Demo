@@ -4,6 +4,7 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 const Chat = () => {
     const [connection, setConnection] = useState(null);
     const [chat, setChat] = useState([]);
+    console.log("chat", chat)
     const [massage, setMassage] = useState();
     const latestChat = useRef(null);
 
@@ -15,7 +16,7 @@ const Chat = () => {
 
     useEffect(() => {
         const newConnection = new HubConnectionBuilder()
-            .withUrl('https://wsdev.groomwell.io/chat?useId=5')
+            .withUrl('https://wsdev.groomwell.io/chat?userId=19')
             .withAutomaticReconnect()
             .build();
         console.log("newConnection", newConnection);
@@ -23,7 +24,8 @@ const Chat = () => {
         if (newConnection) {
             newConnection.start()
                 .then(result => {
-                    console.log('Connected!');
+                    console.log(newConnection.state);
+                    console.log(newConnection.connectionId);
                     newConnection.on('ReceiveMessage', message => {
                         const updatedChat = [...latestChat.current];
                         updatedChat.push(message);
@@ -38,8 +40,8 @@ const Chat = () => {
         if (connection._connectionStarted) {
             try {
                 var data = {
-                    Sender: 3,
-                    Receiver: 2,
+                    Sender: 19,
+                    Receiver: 20,
                     ProductId: 4,
                     Message: massage
                 }
@@ -69,6 +71,7 @@ const Chat = () => {
             />
             <br /><br />
             <button onClick={SendMessage}>Submit</button>
+            <div>{chat}</div>
         </div>
     );
 };
